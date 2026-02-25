@@ -3,13 +3,13 @@ export type PointCheckRequest = {
   msisdn: string;
 };
 
-export type PointCheckedMessage = {
+export type PointCheckedKafkaMessage = {
   msisdn: string;
   point: number;
   expire: string;
 };
 
-export type PointCheckFailMessage = {
+export type PointCheckFailKafkaMessage = {
   status: number;
   message: string;
 };
@@ -24,8 +24,4 @@ export type PointCheckSuccessResponse = {
 export type PointCheckFailResponse = {
   status: number;
   message: string;
-};
-
-export type PointCheckErrorResponse = {
-  error: "timeout" | "internal_error";
 };

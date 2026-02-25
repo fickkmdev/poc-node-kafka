@@ -6,17 +6,12 @@ export type RedeemRequest = {
 };
 
 export type RedeemKafkaMessage = {
-  requestId?: string;
   status: number;
   message: string;
 };
 
 export type RedeemResponse = {
   status: number;
-  description: string;
+  description: "success" | "fail";
   message: string;
-};
-
-export type RedeemErrorResponse = {
-  error: "timeout" | "internal_error";
 };
