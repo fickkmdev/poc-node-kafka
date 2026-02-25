@@ -20,6 +20,8 @@ export type AppConfig = {
     clientId: string;
     groupId: string;
     zone: string;
+    securityProtocol: string;
+    saslMechanism: string;
     client: {
       connectionTimeout: number;
       ssl: boolean;
@@ -96,6 +98,8 @@ export const config: AppConfig = {
     clientId: process.env.KAFKA_CLIENT_ID || "redeem-gateway",
     groupId: process.env.KAFKA_GROUP_ID || "redeem-gateway-consumer",
     zone: process.env.ZONE || "local",
+    securityProtocol: (process.env.KAFKA_SECURITY_PROTOCOL || "PLAINTEXT").toUpperCase(),
+    saslMechanism: (process.env.KAFKA_SASL_MECHANISM || "PLAIN").toLowerCase(),
     client: {
       connectionTimeout: parseNumber(process.env.KAFKA_CONNECTION_TIMEOUT, 10000),
       ssl: parseBoolean(process.env.KAFKA_SSL, false)

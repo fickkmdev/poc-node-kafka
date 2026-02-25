@@ -1,13 +1,13 @@
 [
     {
-        "requestId": "a0e0ca46-f3cc-49df-a869-ecb8841d1e76",
+	"requestId": "b2756614-1f4b-40de-ae0e-4823632900f8",
         "transactionID": "20260224_155821",
         "msisdn": "0963219345",
         "point": 59990,
         "expire": "2026-02-25T08:15:30Z"
     },
     {
-        "requestId": "ee29726e-b443-4d1c-ba8d-4839544363f9",
+	"requestId": "60554782-42e8-446a-a6a3-8481b852a1ad",
         "status": 20012,
         "message": "customer not found"
     },
@@ -17,7 +17,7 @@
         "message": "Campaign redeemed successfully"
     },
     {
-        "requestId": "ee29726e-b443-4d1c-ba8d-4839544363f9",
+	"requestId": "6408448c-f96b-436c-976e-a5a552e13ba2",
         "status": 20014,
         "message": "sorry already redeem"
     }

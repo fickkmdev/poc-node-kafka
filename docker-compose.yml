@@ -42,6 +42,7 @@ services:
     environment:
       BROKERS: redpanda:9092
       ZONE: local
+      KAFKA_SECURITY_PROTOCOL: PLAINTEXT
       KAFKA_SSL: "false"
       KAFKA_ALLOW_AUTO_TOPIC_CREATION: "true"
     ports:

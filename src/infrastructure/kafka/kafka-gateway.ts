@@ -1,21 +1,39 @@
-import { Consumer, Kafka, logLevel, Producer } from "kafkajs";
+import { Consumer, Kafka, logLevel, Producer, SASLOptions } from "kafkajs";
 import { AppConfig } from "../../config";
 import { extractRequestId, parseMessageValue } from "../../shared/message-utils";
 import { KafkaEnvelope } from "../../shared/types";
 
 type MessageHandler = (requestId: string, envelope: KafkaEnvelope) => void;
+type SupportedSaslMechanism = "plain" | "scram-sha-256" | "scram-sha-512";
+
+function parseSaslMechanism(mechanism: string): SupportedSaslMechanism | undefined {
+  if (mechanism === "plain") return "plain";
+  if (mechanism === "scram-sha-256") return "scram-sha-256";
+  if (mechanism === "scram-sha-512") return "scram-sha-512";
+  return undefined;
+}
 
 export class KafkaGateway {
   private readonly producer: Producer;
   private readonly consumer: Consumer;
 
   constructor(private readonly appConfig: AppConfig) {
-    const sasl =
-      appConfig.kafka.zone !== "local" &&
+    const protocol = appConfig.kafka.securityProtocol.toUpperCase();
+    const isSaslProtocol = protocol.startsWith("SASL");
+    const ssl =
+      protocol === "SSL" ||
+      protocol === "SASL_SSL" ||
+      (protocol === "PLAINTEXT" && appConfig.kafka.client.ssl);
+
+    const mechanism = parseSaslMechanism(appConfig.kafka.saslMechanism);
+
+    const sasl: SASLOptions | undefined =
+      isSaslProtocol &&
+      mechanism &&
       appConfig.kafka.auth.apiKey &&
       appConfig.kafka.auth.apiSecret
         ? {
-            mechanism: "plain" as const,
+            mechanism,
             username: appConfig.kafka.auth.apiKey,
             password: appConfig.kafka.auth.apiSecret
           }
@@ -25,7 +43,7 @@ export class KafkaGateway {
       clientId: appConfig.kafka.clientId,
       brokers: appConfig.kafka.brokers,
       connectionTimeout: appConfig.kafka.client.connectionTimeout,
-      ssl: appConfig.kafka.client.ssl,
+      ssl,
       sasl,
       logLevel: logLevel.NOTHING
     });
@@ -65,6 +83,16 @@ export class KafkaGateway {
           console.warn(`skip message without request id on topic "${topic}"`);
           return;
         }
+
+        // eslint-disable-next-line no-console
+        console.log(
+          "[kafka:response]",
+          JSON.stringify({
+            topic,
+            requestId,
+            data
+          })
+        );
 
         onMessage(requestId, { topic, data });
       }
